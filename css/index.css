@@ -1,0 +1,30 @@
+body
+{
+    margin: 0;
+    text-align: center;
+    color: #434344;
+    background: #CFD0CF;
+    font-family: Arial, sans-serif;
+}
+
+main {
+    width: 595px;
+    margin: 0px auto 0px auto;
+}
+
+h1 {
+    font-size: 42px;
+    margin-top: 40px;
+}
+
+#game {
+    width: 595px;
+    height: 440px;
+    margin: 40px auto;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-content: space-between;
+    perspective: 600px;
+}

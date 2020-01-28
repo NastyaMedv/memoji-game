@@ -87,18 +87,21 @@ class Game {
 }
 
 function startApp({gameField}) {
-    ICONS.sort(() => {return Math.random() - Math.random()});
     gameBoard =  document.getElementById(gameField);
-    game = new Game();
-
-    for (let i = 0; i<gameBoard.children.length; i++) {
-        game.addCard(gameBoard.children[i],ICONS[i]);
-    }
-
+    startGame();
     gameBoard.addEventListener('click', function(e) {
         let parent = e.target.parentNode;
         if (parent.classList.contains('card')) {
             game.click(parent.id);
         }
     });
+}
+
+function startGame() {
+    ICONS.sort(() => {return Math.random() - Math.random()});
+    game = new Game();
+
+    for (let i = 0; i<gameBoard.children.length; i++) {
+        game.addCard(gameBoard.children[i],ICONS[i]);
+    }
 }

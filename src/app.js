@@ -32,6 +32,12 @@ class Card {
         this._disabled = false;
     }
 
+    clear() {
+        this.close();
+        this._el.removeAttribute('id');
+        this._el.children[1].innerText = '';
+    }
+
     isDisabled() {
         return this._disabled;
     }
@@ -46,12 +52,16 @@ class Game {
 
     addCard(element,content) {
         let id = this.cards.length;
-        let card = new Card(element,content,id)
+        let card = new Card(element,content,id);
         this.cards.push(card);
     }
 
     match(card1,card2) {
         return (card1.content == card2.content) ? true : false;
+    }
+
+    checkWin() {
+        return (this.openCards == TOTALCARDS) ? true : false;
     }
 
     click(index) {
@@ -83,6 +93,13 @@ class Game {
                 break;
             default: throw new Error('Smth is wrong');
         }
+
+        if (this.checkWin())
+            window.setTimeout(playerWins,300);
+    }
+
+    clearCards() {
+        this.cards.forEach(card => card.clear());
     }
 }
 
@@ -98,10 +115,15 @@ function startApp({gameField}) {
 }
 
 function startGame() {
-    ICONS.sort(() => {return Math.random() - Math.random()});
+    ICONS.sort(() =>  Math.random() - Math.random());
     game = new Game();
 
     for (let i = 0; i<gameBoard.children.length; i++) {
         game.addCard(gameBoard.children[i],ICONS[i]);
     }
+}
+
+function playerWins() {
+    game.clearCards();
+    startGame();
 }

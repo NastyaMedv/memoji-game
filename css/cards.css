@@ -42,6 +42,14 @@
     transform: rotateY(180deg) translateZ(1px);
 }
 
+.wrong .card-face{
+    background: #F44336;
+}
+
+.right .card-face{
+    background: #5AD66F;
+}
+
 @keyframes flip {
   from {transform: none;}
   to {transform: rotateY(180deg);}

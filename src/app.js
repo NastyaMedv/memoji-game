@@ -52,6 +52,7 @@ class Game {
         this.cards = [];
         this.currentOpen = [];
         this.openCards = 0;
+        this.firstCard = true;
     }
 
     addCard(element,content) {
@@ -98,6 +99,11 @@ class Game {
             default: throw new Error('Smth is wrong');
         }
 
+        if (this.firstCard) {
+            this.firstCard = false;
+            return 'first';
+        }
+
         if (this.checkWin()) {
             return 'win';
         }
@@ -112,14 +118,27 @@ function startApp({gameField, timerField}) {
     gameBoard =  document.getElementById(gameField);
     timeField =  document.getElementById(timerField);
     overlay =  document.querySelector('.overlay');
-
     startGame();
+
     gameBoard.addEventListener('click', function(e) {
         let parent = e.target.parentNode;
         if (parent.classList.contains('card')) {
             let result = game.click(parent.id);
+
+            if (result == 'first') {
+                timer = setInterval(function() {
+                    time--;
+                    updateTime(time);
+                    if (time == 0) {
+                        endGame('lose');
+                    }
+                },1000);
+                return;
+            }
+
             if (result == 'win') {
                 endGame(result);
+                return;
             }
         }
     });
@@ -130,14 +149,6 @@ function startGame() {
     game = new Game();
     time = GAMETIME;
     updateTime(time);
-    timer = setInterval(function() {
-        time--;
-        updateTime(time);
-        if (time == 0) {
-            endGame('lose');
-        }
-    },1000);
-
     for (let i = 0; i<gameBoard.children.length; i++) {
         game.addCard(gameBoard.children[i],ICONS[i]);
     }

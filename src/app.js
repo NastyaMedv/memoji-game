@@ -1,6 +1,7 @@
 const  ICONS = ['🦄','🐶','🐭','🐱','🐱','🐭','🐟','🐹','🦄','🐶','🐟','🐹'];
 const TOTALCARDS = 12;
-var gameBoard, game;
+const GAMETIME = 60;
+var gameBoard, game, timer, time, timer;
 
 class Card {
     constructor(element,content,id) {
@@ -26,7 +27,10 @@ class Card {
     }
 
     close() {
-        this._el.classList.add('close-card');
+        if (this._el.classList.contains('open-card')) {
+            this._el.classList.add('close-card');
+            this._el.classList.remove('open-card');
+        }
         this._el.classList.remove('wrong');
         this._el.classList.remove('right');
         this._disabled = false;
@@ -95,13 +99,32 @@ class Game {
         }
 
         if (this.checkWin())
-            window.setTimeout(playerWins,300);
+            setTimeout(playerWins,300);
     }
 
     clearCards() {
         this.cards.forEach(card => card.clear());
     }
 }
+
+// class Timer {
+//     constructor() {
+//         this.time = 60;console.log(this.time);
+//     }
+//
+//     start() {
+//         window.setTimeout(this.timer,1000);
+//     }
+//
+//     timer() {
+//         this.time--;console.log(this.time);
+//         if (this.time == 0) {
+//             console.log('loose');
+//         } else {
+//             window.setTimeout(this.timer,1000);
+//         }
+//     }
+// }
 
 function startApp({gameField}) {
     gameBoard =  document.getElementById(gameField);
@@ -117,6 +140,14 @@ function startApp({gameField}) {
 function startGame() {
     ICONS.sort(() =>  Math.random() - Math.random());
     game = new Game();
+    time = GAMETIME;
+    timer = setInterval(function() {
+        time--;console.log(time);
+        if (time == 0) {
+            clearInterval(timer);
+            playerLoses();
+        }
+    },1000);
 
     for (let i = 0; i<gameBoard.children.length; i++) {
         game.addCard(gameBoard.children[i],ICONS[i]);
@@ -124,6 +155,13 @@ function startGame() {
 }
 
 function playerWins() {
+    alert('You won!');
+    game.clearCards();
+    startGame();
+}
+
+function playerLoses() {
+    alert('You lose');
     game.clearCards();
     startGame();
 }

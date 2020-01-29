@@ -63,12 +63,24 @@
             <div class='card-face'></div>
         </div>
     </div>
-</main>
 
+    <footer id='timer'></footer>
+</main>
+<div class='overlay'>
+    <div class="popup" id='win'>
+        <h2><span>W</span><span>i</span><span>n</span></h2>
+        <button>Play again</button>
+    </div>
+    <div class="popup" id='lose'>
+        <h2><span>L</span><span>o</span><span>s</span><span>e</span></h2>
+        <button>Try again</button>
+    </div>
+</div>
 <script src="src/app.js"></script>
 <script>
     startApp({
-        gameField: 'game'
+        gameField: 'game',
+        timerField: 'timer'
     });
 </script>
 

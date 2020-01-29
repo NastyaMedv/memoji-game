@@ -1,7 +1,7 @@
-const  ICONS = ['🦄','🐶','🐭','🐱','🐱','🐭','🐟','🐹','🦄','🐶','🐟','🐹'];
+const ICONS = ['🦄','🐶','🐭','🐱','🐱','🐭','🐟','🐹','🦄','🐶','🐟','🐹'];
 const TOTALCARDS = 12;
 const GAMETIME = 60;
-var gameBoard, game, timer, time, timer;
+var gameBoard, game, timer, time, timeField, overlay;
 
 class Card {
     constructor(element,content,id) {
@@ -98,8 +98,9 @@ class Game {
             default: throw new Error('Smth is wrong');
         }
 
-        if (this.checkWin())
-            setTimeout(playerWins,300);
+        if (this.checkWin()) {
+            return 'win';
+        }
     }
 
     clearCards() {
@@ -107,32 +108,19 @@ class Game {
     }
 }
 
-// class Timer {
-//     constructor() {
-//         this.time = 60;console.log(this.time);
-//     }
-//
-//     start() {
-//         window.setTimeout(this.timer,1000);
-//     }
-//
-//     timer() {
-//         this.time--;console.log(this.time);
-//         if (this.time == 0) {
-//             console.log('loose');
-//         } else {
-//             window.setTimeout(this.timer,1000);
-//         }
-//     }
-// }
-
-function startApp({gameField}) {
+function startApp({gameField, timerField}) {
     gameBoard =  document.getElementById(gameField);
+    timeField =  document.getElementById(timerField);
+    overlay =  document.querySelector('.overlay');
+
     startGame();
     gameBoard.addEventListener('click', function(e) {
         let parent = e.target.parentNode;
         if (parent.classList.contains('card')) {
-            game.click(parent.id);
+            let result = game.click(parent.id);
+            if (result == 'win') {
+                endGame(result);
+            }
         }
     });
 }
@@ -141,11 +129,12 @@ function startGame() {
     ICONS.sort(() =>  Math.random() - Math.random());
     game = new Game();
     time = GAMETIME;
+    updateTime(time);
     timer = setInterval(function() {
-        time--;console.log(time);
+        time--;
+        updateTime(time);
         if (time == 0) {
-            clearInterval(timer);
-            playerLoses();
+            endGame('lose');
         }
     },1000);
 
@@ -154,14 +143,22 @@ function startGame() {
     }
 }
 
-function playerWins() {
-    alert('You won!');
-    game.clearCards();
-    startGame();
+function updateTime(time) {
+    let minutes = Math.floor(time/60).toString().padStart(2,'0');
+    let seconds = Math.floor(time%60).toString().padStart(2,'0');
+    timeField.innerText = minutes + ':' + seconds;
 }
 
-function playerLoses() {
-    alert('You lose');
-    game.clearCards();
-    startGame();
+function endGame(state) {
+    clearInterval(timer);
+    updateTime(0);
+    overlay.style.display = 'block';
+    let popup = overlay.querySelector('#'+state);
+    popup.style.display = 'block';
+    popup.querySelector('button').onclick = function() {
+        overlay.style.display = 'none';
+        popup.style.display = 'none';
+        game.clearCards();
+        startGame();
+    }
 }
